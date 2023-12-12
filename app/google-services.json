@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "649902899975",
+    "project_id": "template-compose",
+    "storage_bucket": "template-compose.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649902899975:android:1f6d11efd44f972520fba2",
+        "android_client_info": {
+          "package_name": "fr.yofardev.templatecompose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQdX-xRsY7-4csMYelJxknOOahxWuix1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
