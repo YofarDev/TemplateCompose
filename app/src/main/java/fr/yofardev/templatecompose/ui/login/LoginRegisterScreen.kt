@@ -1,5 +1,10 @@
 package fr.yofardev.templatecompose.ui.login
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +20,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -22,6 +30,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -30,14 +39,17 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -53,17 +65,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.yofardev.templatecompose.R
+import fr.yofardev.templatecompose.ui.components.AppTile
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
-    Box(
-        modifier = Modifier.background(color = Color.White)
+fun LoginRegisterScreen(loginViewModel: LoginViewModel = viewModel()) {
+    Scaffold(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             content = getComponents(loginViewModel),
         )
@@ -75,32 +89,77 @@ private fun getComponents(loginViewModel: LoginViewModel): @Composable() (Column
     val rubik = FontFamily(
         Font(R.font.rubik, FontWeight.Normal),
     )
+    val isRotated = loginViewModel.isRotated.value
+    val rotation by animateFloatAsState(
+        targetValue = if (isRotated) 360f else 0f,
+        animationSpec = tween(
+            durationMillis = 300, 
+            delayMillis = 0,
+            easing = LinearEasing
+        ),
+        label = "logoRotation"
+    )
     return {
+        Spacer(modifier = Modifier.height(32.dp))
         Image(
-            painter = painterResource(R.drawable.logo), // Replace "logo" with your actual logo resource
+            painter = painterResource(R.drawable.logo),
             contentDescription = "App Logo",
             modifier = Modifier
                 .padding(top = 20.dp)
                 .height(140.dp)
                 .width(140.dp)
+                .rotate(rotation)
         )
         Text("YOFARDEV", fontFamily = rubik, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-
         Spacer(modifier = Modifier.height(32.dp))
 
-        LoginField(loginViewModel)
-        Spacer(modifier = Modifier.weight(1f))
-        LineWithText()
-        Spacer(modifier = Modifier.weight(1f))
-        AppTile("Créer un compte", onTap = {})
+        SwappableScreens(loginViewModel)
     }
 
 
 }
 
-@Composable
-fun LoginField(loginViewModel: LoginViewModel) {
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SwappableScreens(
+    loginViewModel: LoginViewModel = viewModel(),
+) {
+    val state = rememberPagerState { 2 }
+    HorizontalPager(
+
+        state = state
+     ) { page ->
+        when (page) {
+            0 -> LoginScreen(loginViewModel, state)
+            1 -> RegisterScreen(loginViewModel, state)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun LoginScreen(
+    loginViewModel: LoginViewModel = viewModel(),
+    state: PagerState
+) {
+    val clock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
+    Column ( Modifier.padding(16.dp),) {
+        LoginInputField(loginViewModel)
+        Spacer(modifier = Modifier.weight(1f))
+        LineWithText()
+        Spacer(modifier = Modifier.weight(1f))
+        AppTile("Créer un compte", icon = R.drawable.email, onTap = {
+          loginViewModel.switchPage(state, 1, clock)
+        })
+    }
+
+}
+
+
+@Composable
+fun LoginInputField(loginViewModel: LoginViewModel) {
     return Box(
         modifier = Modifier
             .background(
@@ -126,20 +185,20 @@ fun LoginField(loginViewModel: LoginViewModel) {
 
             CustomTextField(
                 value = loginViewModel.password,
-                placeholder = "Password",
+                placeholder = "Mot de passe",
                 leadingIcon = Icons.Default.Lock,
                 onValueChange = { newValue -> loginViewModel.password.value = newValue },
                 isPassword = true
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Mot de pass oublié?",
                 color = Color.Black.copy(alpha = 0.8f),
                 textDecoration = TextDecoration.Underline,
-                 fontSize = 12.sp
+                fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
@@ -166,6 +225,7 @@ fun CustomTextField(
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
+
             .background(Color.White, shape = RoundedCornerShape(50.dp))
             .clip(RoundedCornerShape(50.dp)),
         colors = TextFieldDefaults.textFieldColors(
@@ -216,43 +276,9 @@ fun LineWithText() {
     }
 }
 
-@Composable
-fun AppTile(title: String, onTap: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
-            .border(1.dp, Color.Gray)
-            .clickable(onClick = onTap)
-    ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.width(8.dp))
-            Image(
-                painter = painterResource(id = R.drawable.email),
-                contentDescription = null,
-                modifier = Modifier.height(20.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = title,
-                style = TextStyle(fontWeight = FontWeight.Bold)
-            )
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = null
-            )
-        }
-    }
-}
-
-
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginScreen() {
-    LoginScreen()
+    LoginRegisterScreen()
 }
