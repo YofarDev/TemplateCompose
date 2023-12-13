@@ -1,4 +1,4 @@
-package fr.yofardev.templatecompose.ui.home
+package fr.yofardev.templatecompose.ui.screens.home
 
 import androidx.compose.runtime.Composable
 

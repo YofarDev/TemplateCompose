@@ -1,4 +1,4 @@
-package fr.yofardev.templatecompose.ui.login
+package fr.yofardev.templatecompose.ui.screens.login
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearEasing
@@ -7,8 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,46 +26,35 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MonotonicFrameClock
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.yofardev.templatecompose.R
+import fr.yofardev.templatecompose.ui.components.AppTextField
 import fr.yofardev.templatecompose.ui.components.AppTile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import fr.yofardev.templatecompose.utils.isValidEmail
+import fr.yofardev.templatecompose.utils.isValidPassword
+import fr.yofardev.templatecompose.viewmodels.LoginViewModel
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -93,7 +80,7 @@ private fun getComponents(loginViewModel: LoginViewModel): @Composable() (Column
     val rotation by animateFloatAsState(
         targetValue = if (isRotated) 360f else 0f,
         animationSpec = tween(
-            durationMillis = 300, 
+            durationMillis = 300,
             delayMillis = 0,
             easing = LinearEasing
         ),
@@ -129,7 +116,7 @@ fun SwappableScreens(
     HorizontalPager(
 
         state = state
-     ) { page ->
+    ) { page ->
         when (page) {
             0 -> LoginScreen(loginViewModel, state)
             1 -> RegisterScreen(loginViewModel, state)
@@ -145,13 +132,13 @@ fun LoginScreen(
     state: PagerState
 ) {
     val clock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
-    Column ( Modifier.padding(16.dp),) {
+    Column(Modifier.padding(16.dp)) {
         LoginInputField(loginViewModel)
         Spacer(modifier = Modifier.weight(1f))
         LineWithText()
         Spacer(modifier = Modifier.weight(1f))
-        AppTile("Créer un compte", icon = R.drawable.email, onTap = {
-          loginViewModel.switchPage(state, 1, clock)
+        AppTile(stringResource(id = R.string.to_register), icon = R.drawable.email, onTap = {
+            loginViewModel.switchPage(state, 1, clock)
         })
     }
 
@@ -174,25 +161,29 @@ fun LoginInputField(loginViewModel: LoginViewModel) {
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Top
         ) {
-            CustomTextField(
+            AppTextField(
                 value = loginViewModel.email,
-                placeholder = "Email",
+                placeholder = stringResource(id = R.string.email),
                 leadingIcon = Icons.Default.Email,
-                onValueChange = { newValue -> loginViewModel.email.value = newValue }
+                onValueChange = { newValue -> loginViewModel.email.value = newValue },
+                hasError = loginViewModel.displayErrors.value && loginViewModel.email.value.isBlank() && !loginViewModel.email.value.isValidEmail(),
+                errorMessage = stringResource(id = R.string.error_email)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            CustomTextField(
+            AppTextField(
                 value = loginViewModel.password,
-                placeholder = "Mot de passe",
+                placeholder = stringResource(id = R.string.password),
                 leadingIcon = Icons.Default.Lock,
                 onValueChange = { newValue -> loginViewModel.password.value = newValue },
-                isPassword = true
+                isPassword = true,
+                hasError = loginViewModel.displayErrors.value && loginViewModel.password.value.isBlank() && loginViewModel.password.value.isValidPassword(),
+                errorMessage = stringResource(id = R.string.error_password)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Mot de pass oublié?",
+                text = stringResource(id = R.string.forgot_password),
                 color = Color.Black.copy(alpha = 0.8f),
                 textDecoration = TextDecoration.Underline,
                 fontSize = 12.sp
@@ -202,52 +193,14 @@ fun LoginInputField(loginViewModel: LoginViewModel) {
             Button(
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
-                onClick = { /* Handle login */ }) {
-                Text("Se connecter", color = Color.White)
+                onClick = { loginViewModel.signIn() }) {
+                Text(stringResource(id = R.string.login), color = Color.White)
 
             }
         }
     }
 }
 
-@Composable
-fun CustomTextField(
-    value: MutableState<String>,
-    placeholder: String,
-    leadingIcon: ImageVector,
-    onValueChange: (String) -> Unit,
-    isPassword: Boolean = false
-) {
-    var passwordVisibility by remember { mutableStateOf(isPassword) }
-
-    TextField(
-        value = value.value,
-        onValueChange = onValueChange,
-        modifier = Modifier
-            .fillMaxWidth()
-
-            .background(Color.White, shape = RoundedCornerShape(50.dp))
-            .clip(RoundedCornerShape(50.dp)),
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.White,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        leadingIcon = { Icon(leadingIcon, contentDescription = null) },
-        trailingIcon = {
-            if (isPassword) IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                Icon(
-                    painter = painterResource(
-                        if (passwordVisibility) com.google.android.material.R.drawable.design_ic_visibility_off else com.google.android.material.R.drawable.design_ic_visibility
-                    ),
-                    contentDescription = "Toggle password visibility"
-                )
-            }
-        },
-        placeholder = { Text(placeholder) },
-        visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None
-    )
-}
 
 @Composable
 fun LineWithText() {
