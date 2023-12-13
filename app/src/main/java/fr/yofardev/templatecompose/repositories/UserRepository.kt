@@ -1,7 +1,6 @@
 package fr.yofardev.templatecompose.repositories
 
 import android.util.Log
-import androidx.compose.ui.res.stringResource
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -65,10 +64,10 @@ data class FirebaseResult
     val user: User? = null,
     val error: String? = null
 ){
-        fun getMessage():String{
+        fun getErrorStringInt():Int{
             return when (error){
-                "The email address is already in use by another account." -> "Cette adresse email est déjà utilisée"
-                else -> "Une erreur est survenue"
+                "The email address is already in use by another account." -> R.string.error_email_exist
+                else -> R.string.try_again
             }
         }
     }

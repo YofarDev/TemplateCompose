@@ -3,6 +3,7 @@ package fr.yofardev.templatecompose.viewmodels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.MonotonicFrameClock
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,15 +21,16 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
     val currentUser = mutableStateOf<User?>(null)
 
     // Ui state
+    val isInitializing = mutableStateOf(true)
     val displayErrors = mutableStateOf(false)
     val isRotated = mutableStateOf(false)
     val isLoading = mutableStateOf(false)
-    val signUpError = mutableStateOf("")
+    val signUpError = mutableIntStateOf(-1)
 
     // Input fields
-    val email = mutableStateOf("")
-    val password = mutableStateOf("")
-    val confirmPassword = mutableStateOf("")
+    val emailInput = mutableStateOf("")
+    val passwordInput = mutableStateOf("")
+    val confirmPasswordInput = mutableStateOf("")
 
 
    @OptIn(ExperimentalFoundationApi::class)
@@ -44,17 +46,17 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
 
     fun signUp() {
 
-        if (!email.value.isValidEmail() || !password.value.isValidPassword() || password.value != confirmPassword.value)
+        if (!emailInput.value.isValidEmail() || !passwordInput.value.isValidPassword() || passwordInput.value != confirmPasswordInput.value)
         {
             displayErrors.value = true
             return
         }
         isLoading.value = true
         viewModelScope.launch {
-            val firebaseResult = userRepository.signUp(email.value, password.value)
+            val firebaseResult = userRepository.signUp(emailInput.value, passwordInput.value)
             currentUser.value = firebaseResult.user
             if (firebaseResult.error != null) {
-                signUpError.value = firebaseResult.getMessage()
+                signUpError.intValue = firebaseResult.getErrorStringInt()
             }
             isLoading.value = false
 
@@ -63,14 +65,14 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
 
 
     fun signIn() {
-        if (!email.value.isValidEmail() || !password.value.isValidPassword())
+        if (!emailInput.value.isValidEmail() || !passwordInput.value.isValidPassword())
         {
             displayErrors.value = true
             return
         }
         isLoading.value = true
         viewModelScope.launch {
-            currentUser.value = userRepository.signIn(email.value, password.value)
+            currentUser.value = userRepository.signIn(emailInput.value, passwordInput.value)
             isLoading.value = false
         }
     }
@@ -86,6 +88,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
     fun getCurrentUser(){
         viewModelScope.launch {
             currentUser.value = userRepository.getCurrentUser()
+            isInitializing.value = false
         }
     }
 

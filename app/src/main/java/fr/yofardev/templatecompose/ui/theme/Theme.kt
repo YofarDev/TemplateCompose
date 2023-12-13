@@ -47,6 +47,13 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+val montserrat = FontFamily(
+    Font(R.font.montserrat, FontWeight.Normal),
+)
+val rubik = FontFamily(
+    Font(R.font.rubik, FontWeight.Normal),
+)
+
 @Composable
 fun TemplateComposeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -72,9 +79,7 @@ fun TemplateComposeTheme(
         }
     }
 
-    val montserrat = FontFamily(
-        Font(R.font.montserrat, FontWeight.Normal),
-    )
+
 
 
     val typo = Typography(

@@ -76,40 +76,40 @@ fun RegisterInputField(userViewModel: UserViewModel = viewModel()) {
             verticalArrangement = Arrangement.Top
         ) {
             AppTextField(
-                value = userViewModel.email,
+                value = userViewModel.emailInput,
                 placeholder = stringResource(id = R.string.email),
                 leadingIcon = Icons.Default.Email,
-                onValueChange = { newValue -> userViewModel.email.value = newValue },
-                hasError = userViewModel.displayErrors.value &&  !userViewModel.email.value.isValidEmail(),
+                onValueChange = { newValue -> userViewModel.emailInput.value = newValue },
+                hasError = userViewModel.displayErrors.value &&  !userViewModel.emailInput.value.isValidEmail(),
                 errorMessage = stringResource(id = R.string.error_email)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             AppTextField(
-                value = userViewModel.password,
+                value = userViewModel.passwordInput,
                 placeholder = stringResource(id = R.string.password),
                 leadingIcon = Icons.Default.Lock,
-                onValueChange = { newValue -> userViewModel.password.value = newValue },
+                onValueChange = { newValue -> userViewModel.passwordInput.value = newValue },
                 isPassword = true,
-                hasError = userViewModel.displayErrors.value && !userViewModel.password.value.isValidPassword(),
+                hasError = userViewModel.displayErrors.value && !userViewModel.passwordInput.value.isValidPassword(),
                 errorMessage = stringResource(id = R.string.error_password)
             )
             Spacer(modifier = Modifier.height(8.dp))
             AppTextField(
-                value = userViewModel.confirmPassword,
+                value = userViewModel.confirmPasswordInput,
                 placeholder = stringResource(id = R.string.confirm_password),
                 leadingIcon = Icons.Default.Lock,
-                onValueChange = { newValue -> userViewModel.confirmPassword.value = newValue },
+                onValueChange = { newValue -> userViewModel.confirmPasswordInput.value = newValue },
                 isPassword = true,
-                hasError = userViewModel.displayErrors.value && userViewModel.password.value != userViewModel.confirmPassword.value && userViewModel.confirmPassword.value.isValidPassword(),
+                hasError = userViewModel.displayErrors.value && userViewModel.passwordInput.value != userViewModel.confirmPasswordInput.value && userViewModel.confirmPasswordInput.value.isValidPassword(),
                 errorMessage = stringResource(id = R.string.error_confirm_password)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
-            if (userViewModel.signUpError.value.isNotEmpty()) {
+            if (userViewModel.signUpError.intValue != -1) {
                 Text(
-                    text = userViewModel.signUpError.value,
+                    text =  stringResource(id = userViewModel.signUpError.intValue),
                     color = Color.Red,
                     modifier = Modifier.padding(8.dp)
                 )
