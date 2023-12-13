@@ -38,16 +38,19 @@ fun AppTextField(
     errorMessage:String = ""
 ) {
     var passwordVisibility by remember { mutableStateOf(isPassword) }
+    var modifier = Modifier
+        .fillMaxWidth()
+        .background(Color.White, shape = RoundedCornerShape(50.dp))
+        .clip(RoundedCornerShape(50.dp))
+    if (hasError) {
+        modifier = modifier.border(1.dp, Color.Red, RoundedCornerShape(50.dp))
+    }
 
     Column {
         TextField(
             value = value.value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(50.dp))
-                .border(if (hasError) 1.dp else 0.dp, Color.Red, shape = RoundedCornerShape(50.dp))
-                .clip(RoundedCornerShape(50.dp)),
+            modifier = modifier,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,

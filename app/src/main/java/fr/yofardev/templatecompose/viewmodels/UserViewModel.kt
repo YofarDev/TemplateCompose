@@ -16,33 +16,48 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
+class UserViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
     val currentUser = mutableStateOf<User?>(null)
+
+    // Ui state
     val displayErrors = mutableStateOf(false)
+    val isRotated = mutableStateOf(false)
+    val isLoading = mutableStateOf(false)
+    val signUpError = mutableStateOf("")
+
+    // Input fields
     val email = mutableStateOf("")
     val password = mutableStateOf("")
     val confirmPassword = mutableStateOf("")
-    val isRotated = mutableStateOf(false)
 
 
    @OptIn(ExperimentalFoundationApi::class)
    fun switchPage(state: PagerState, page: Int, clock: MonotonicFrameClock?) {
-       if (clock == null) return;
+       if (clock == null) return
         viewModelScope.launch(clock) {
             displayErrors.value = false
+            isLoading.value = false
             isRotated.value = !isRotated.value
             state.animateScrollToPage(page)
         }
     }
 
     fun signUp() {
+
         if (!email.value.isValidEmail() || !password.value.isValidPassword() || password.value != confirmPassword.value)
         {
             displayErrors.value = true
             return
         }
+        isLoading.value = true
         viewModelScope.launch {
-            currentUser.value = userRepository.signUp(email.value, password.value)
+            val firebaseResult = userRepository.signUp(email.value, password.value)
+            currentUser.value = firebaseResult.user
+            if (firebaseResult.error != null) {
+                signUpError.value = firebaseResult.getMessage()
+            }
+            isLoading.value = false
+
         }
     }
 
@@ -53,8 +68,25 @@ class LoginViewModel @Inject constructor(private val userRepository: UserReposit
             displayErrors.value = true
             return
         }
+        isLoading.value = true
         viewModelScope.launch {
             currentUser.value = userRepository.signIn(email.value, password.value)
+            isLoading.value = false
         }
     }
+
+    fun signOut(){
+        viewModelScope.launch {
+            userRepository.signOut()
+            currentUser.value = null
+
+        }
+    }
+
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            currentUser.value = userRepository.getCurrentUser()
+        }
+    }
+
 }

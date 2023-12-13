@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,15 +33,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.yofardev.templatecompose.R
 import fr.yofardev.templatecompose.ui.components.AppTextField
 import fr.yofardev.templatecompose.ui.components.AppTile
+import fr.yofardev.templatecompose.ui.components.LoadingIndicator
 import fr.yofardev.templatecompose.utils.isValidEmail
 import fr.yofardev.templatecompose.utils.isValidPassword
-import fr.yofardev.templatecompose.viewmodels.LoginViewModel
+import fr.yofardev.templatecompose.viewmodels.UserViewModel
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RegisterScreen(
-    loginViewModel: LoginViewModel = viewModel(), state: PagerState
+    userViewModel: UserViewModel = viewModel(), state: PagerState
 ) {
     val clock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
     Column(
@@ -48,17 +50,17 @@ fun RegisterScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        RegisterInputField(loginViewModel)
+        RegisterInputField(userViewModel)
         Spacer(Modifier.weight(1f))
         AppTile(stringResource(id = R.string.to_login), goBack = true, onTap = {
-            loginViewModel.switchPage(state, 0, clock)
+            userViewModel.switchPage(state, 0, clock)
         })
 
     }
 }
 
 @Composable
-fun RegisterInputField(loginViewModel: LoginViewModel = viewModel()) {
+fun RegisterInputField(userViewModel: UserViewModel = viewModel()) {
     return Box(
         modifier = Modifier
             .background(
@@ -70,47 +72,56 @@ fun RegisterInputField(loginViewModel: LoginViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.End,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             AppTextField(
-                value = loginViewModel.email,
+                value = userViewModel.email,
                 placeholder = stringResource(id = R.string.email),
                 leadingIcon = Icons.Default.Email,
-                onValueChange = { newValue -> loginViewModel.email.value = newValue },
-                hasError = loginViewModel.displayErrors.value && loginViewModel.email.value.isBlank() && !loginViewModel.email.value.isValidEmail(),
+                onValueChange = { newValue -> userViewModel.email.value = newValue },
+                hasError = userViewModel.displayErrors.value &&  !userViewModel.email.value.isValidEmail(),
                 errorMessage = stringResource(id = R.string.error_email)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             AppTextField(
-                value = loginViewModel.password,
+                value = userViewModel.password,
                 placeholder = stringResource(id = R.string.password),
                 leadingIcon = Icons.Default.Lock,
-                onValueChange = { newValue -> loginViewModel.password.value = newValue },
+                onValueChange = { newValue -> userViewModel.password.value = newValue },
                 isPassword = true,
-                hasError = loginViewModel.displayErrors.value && loginViewModel.password.value.isBlank() && loginViewModel.password.value.isValidPassword(),
+                hasError = userViewModel.displayErrors.value && !userViewModel.password.value.isValidPassword(),
                 errorMessage = stringResource(id = R.string.error_password)
             )
             Spacer(modifier = Modifier.height(8.dp))
             AppTextField(
-                value = loginViewModel.confirmPassword,
+                value = userViewModel.confirmPassword,
                 placeholder = stringResource(id = R.string.confirm_password),
                 leadingIcon = Icons.Default.Lock,
-                onValueChange = { newValue -> loginViewModel.confirmPassword.value = newValue },
+                onValueChange = { newValue -> userViewModel.confirmPassword.value = newValue },
                 isPassword = true,
-                hasError = loginViewModel.displayErrors.value && loginViewModel.password.value != loginViewModel.confirmPassword.value && loginViewModel.confirmPassword.value.isValidPassword(),
+                hasError = userViewModel.displayErrors.value && userViewModel.password.value != userViewModel.confirmPassword.value && userViewModel.confirmPassword.value.isValidPassword(),
                 errorMessage = stringResource(id = R.string.error_confirm_password)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
-                onClick = { loginViewModel.signUp() }) {
-                Text(stringResource(id = R.string.register), color = Color.White)
+            if (userViewModel.signUpError.value.isNotEmpty()) {
+                Text(
+                    text = userViewModel.signUpError.value,
+                    color = Color.Red,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            if (userViewModel.isLoading.value) LoadingIndicator() else Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+                Button(
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
+                    onClick = { userViewModel.signUp() }) {
+                    Text(stringResource(id = R.string.register), color = Color.White)
 
+                }
             }
         }
     }

@@ -52,31 +52,32 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.yofardev.templatecompose.R
 import fr.yofardev.templatecompose.ui.components.AppTextField
 import fr.yofardev.templatecompose.ui.components.AppTile
+import fr.yofardev.templatecompose.ui.components.LoadingIndicator
 import fr.yofardev.templatecompose.utils.isValidEmail
 import fr.yofardev.templatecompose.utils.isValidPassword
-import fr.yofardev.templatecompose.viewmodels.LoginViewModel
+import fr.yofardev.templatecompose.viewmodels.UserViewModel
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun LoginRegisterScreen(loginViewModel: LoginViewModel = viewModel()) {
+fun LoginRegisterScreen(userViewModel: UserViewModel = viewModel()) {
     Scaffold(
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            content = getComponents(loginViewModel),
+            content = getComponents(userViewModel),
         )
     }
 }
 
 @Composable
-private fun getComponents(loginViewModel: LoginViewModel): @Composable() (ColumnScope.() -> Unit) {
+private fun getComponents(userViewModel: UserViewModel): @Composable() (ColumnScope.() -> Unit) {
     val rubik = FontFamily(
         Font(R.font.rubik, FontWeight.Normal),
     )
-    val isRotated = loginViewModel.isRotated.value
+    val isRotated = userViewModel.isRotated.value
     val rotation by animateFloatAsState(
         targetValue = if (isRotated) 360f else 0f,
         animationSpec = tween(
@@ -99,8 +100,8 @@ private fun getComponents(loginViewModel: LoginViewModel): @Composable() (Column
         )
         Text("YOFARDEV", fontFamily = rubik, fontWeight = FontWeight.Bold, fontSize = 24.sp)
         Spacer(modifier = Modifier.height(32.dp))
+        SwappableScreens(userViewModel)
 
-        SwappableScreens(loginViewModel)
     }
 
 
@@ -110,7 +111,7 @@ private fun getComponents(loginViewModel: LoginViewModel): @Composable() (Column
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwappableScreens(
-    loginViewModel: LoginViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel(),
 ) {
     val state = rememberPagerState { 2 }
     HorizontalPager(
@@ -118,8 +119,8 @@ fun SwappableScreens(
         state = state
     ) { page ->
         when (page) {
-            0 -> LoginScreen(loginViewModel, state)
-            1 -> RegisterScreen(loginViewModel, state)
+            0 -> LoginScreen(userViewModel, state)
+            1 -> RegisterScreen(userViewModel, state)
         }
     }
 }
@@ -128,17 +129,17 @@ fun SwappableScreens(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel(),
     state: PagerState
 ) {
     val clock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
     Column(Modifier.padding(16.dp)) {
-        LoginInputField(loginViewModel)
+        LoginInputField(userViewModel)
         Spacer(modifier = Modifier.weight(1f))
         LineWithText()
         Spacer(modifier = Modifier.weight(1f))
         AppTile(stringResource(id = R.string.to_register), icon = R.drawable.email, onTap = {
-            loginViewModel.switchPage(state, 1, clock)
+            userViewModel.switchPage(state, 1, clock)
         })
     }
 
@@ -146,7 +147,7 @@ fun LoginScreen(
 
 
 @Composable
-fun LoginInputField(loginViewModel: LoginViewModel) {
+fun LoginInputField(userViewModel: UserViewModel) {
     return Box(
         modifier = Modifier
             .background(
@@ -158,27 +159,27 @@ fun LoginInputField(loginViewModel: LoginViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.End,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             AppTextField(
-                value = loginViewModel.email,
+                value = userViewModel.email,
                 placeholder = stringResource(id = R.string.email),
                 leadingIcon = Icons.Default.Email,
-                onValueChange = { newValue -> loginViewModel.email.value = newValue },
-                hasError = loginViewModel.displayErrors.value && loginViewModel.email.value.isBlank() && !loginViewModel.email.value.isValidEmail(),
+                onValueChange = { newValue -> userViewModel.email.value = newValue },
+                hasError = userViewModel.displayErrors.value && !userViewModel.email.value.isValidEmail(),
                 errorMessage = stringResource(id = R.string.error_email)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             AppTextField(
-                value = loginViewModel.password,
+                value = userViewModel.password,
                 placeholder = stringResource(id = R.string.password),
                 leadingIcon = Icons.Default.Lock,
-                onValueChange = { newValue -> loginViewModel.password.value = newValue },
+                onValueChange = { newValue -> userViewModel.password.value = newValue },
                 isPassword = true,
-                hasError = loginViewModel.displayErrors.value && loginViewModel.password.value.isBlank() && loginViewModel.password.value.isValidPassword(),
+                hasError = userViewModel.displayErrors.value && !userViewModel.password.value.isValidPassword(),
                 errorMessage = stringResource(id = R.string.error_password)
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -190,12 +191,16 @@ fun LoginInputField(loginViewModel: LoginViewModel) {
             )
 
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
-                onClick = { loginViewModel.signIn() }) {
-                Text(stringResource(id = R.string.login), color = Color.White)
-
+            if (userViewModel.isLoading.value) LoadingIndicator() else Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
+                    onClick = { userViewModel.signIn() }) {
+                    Text(stringResource(id = R.string.login), color = Color.White)
+                }
             }
         }
     }

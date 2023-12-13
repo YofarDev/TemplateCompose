@@ -6,8 +6,11 @@
     <string name="to_login">Page de connexion</string>
     <string name="to_register">Créer un compte</string>
     <string name="login">Se connecter</string>
+    <string name="logout">Se déconnecter</string>
     <string name="register">S\'inscrire</string>
     <string name="confirm_password">Confirmation</string>
+    <string name="try_again">Une erreur est survenue, réessayez plus tard</string>
+    <string name="error_email_exist">Un compte avec cette adresse email existe déjà</string>
     <string name="error_confirm_password">Les mots de passe ne correspondent pas</string>
     <string name="error_email">Veuillez entrer une adresse email valide</string>
     <string name="error_password">Veuillez entrer un mot de passe valide</string>
