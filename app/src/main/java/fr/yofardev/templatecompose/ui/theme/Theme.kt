@@ -1,13 +1,10 @@
 package fr.yofardev.templatecompose.ui.theme
 
 import android.app.Activity
-
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -25,16 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import fr.yofardev.templatecompose.R
 
-private val DarkColorScheme = darkColorScheme(
-    primary = BlueYofardev,
-    secondary = DarkBlueYofardev,
-    tertiary = Teal700
-)
+
 
 private val LightColorScheme = lightColorScheme(
     primary = BlueYofardev,
     secondary = DarkBlueYofardev,
     tertiary = Teal700
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -67,15 +61,15 @@ fun TemplateComposeTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        darkTheme -> LightColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.White.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = Color.Black.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 

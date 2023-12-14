@@ -12,6 +12,7 @@ import fr.yofardev.templatecompose.models.User
 import fr.yofardev.templatecompose.repositories.UserRepository
 import fr.yofardev.templatecompose.utils.isValidEmail
 import fr.yofardev.templatecompose.utils.isValidPassword
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -79,9 +80,11 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
 
     fun signOut(){
         viewModelScope.launch {
+           isInitializing.value = true
             userRepository.signOut()
             currentUser.value = null
-
+            delay(300)
+           isInitializing.value = false
         }
     }
 

@@ -6,7 +6,7 @@
     <string name="to_login">Page de connexion</string>
     <string name="to_register">Créer un compte</string>
     <string name="login">Se connecter</string>
-    <string name="logout">Se déconnecter</string>
+    <string name="sign_out">Se déconnecter</string>
     <string name="register">S\'inscrire</string>
     <string name="confirm_password">Confirmation</string>
     <string name="try_again">Une erreur est survenue, réessayez plus tard</string>
@@ -16,6 +16,7 @@
     <string name="error_password">Veuillez entrer un mot de passe valide</string>
     <string name="tab_home">Accueil</string>
     <string name="tab_map">Carte</string>
+    <string name="add_publication">Ajouter une publication</string>
 
 
 

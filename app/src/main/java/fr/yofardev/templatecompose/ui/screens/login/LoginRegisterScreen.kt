@@ -1,7 +1,7 @@
 package fr.yofardev.templatecompose.ui.screens.login
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -76,9 +76,9 @@ private fun getComponents(userViewModel: UserViewModel): @Composable() (ColumnSc
     val rotation by animateFloatAsState(
         targetValue = if (isRotated) 360f else 0f,
         animationSpec = tween(
-            durationMillis = 300,
-            delayMillis = 0,
-            easing = LinearEasing
+            durationMillis = 800,
+           // delayMillis = 0,
+            easing = EaseInOut
         ),
         label = "logoRotation"
     )

@@ -1,5 +1,6 @@
 package fr.yofardev.templatecompose.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
@@ -26,24 +28,38 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppTopBar(scope: CoroutineScope, drawerState: DrawerState) {
+fun AppTopBar(
+    scope: CoroutineScope? = null,
+    drawerState: DrawerState? = null,
+    title:String = "",
+    backArrow: Boolean = false,
+    onBackArrowClicked: () -> Unit = {}
+) {
     TopAppBar(
         backgroundColor = BlueYofardev,
         contentColor = Color.White,
         elevation = 12.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-    ) {
+            .height(56.dp),
+
+        ) {
         Row(
             modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(8.dp)
+              
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+
         ) {
-            IconButton(onClick = {
-                scope.launch {
-                    drawerState.apply {
-                        if (isClosed) open() else close()
+            if (backArrow)
+                IconButton(onClick = { onBackArrowClicked() }) {
+                    Icon(Icons.Rounded.ArrowBack, contentDescription = "Back", tint= Color.White)
+                }
+            else IconButton(onClick = {
+                scope?.launch {
+                    drawerState?.apply {
+                        if (isClosed ) open() else close()
                     }
                 }
             }) {
@@ -56,14 +72,14 @@ fun AppTopBar(scope: CoroutineScope, drawerState: DrawerState) {
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                "YOFARDEV",
+                if (title.isEmpty()) "YOFARDEV" else title,
                 color = Color.White,
                 fontFamily = rubik,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
+                fontSize = if (title.isEmpty()) 24.sp else 18.sp,
             )
             Spacer(modifier = Modifier.weight(1f))
-     AppLogo(size = 42)
+            AppLogo(size = 42)
 
         }
     }

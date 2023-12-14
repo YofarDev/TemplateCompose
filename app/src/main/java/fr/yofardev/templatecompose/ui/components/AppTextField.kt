@@ -10,6 +10,9 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -20,12 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.material.R
 
 @Composable
 fun AppTextField(
@@ -34,8 +35,8 @@ fun AppTextField(
     leadingIcon: ImageVector,
     onValueChange: (String) -> Unit,
     isPassword: Boolean = false,
-    hasError:Boolean = false,
-    errorMessage:String = ""
+    hasError: Boolean = false,
+    errorMessage: String = ""
 ) {
     var passwordVisibility by remember { mutableStateOf(isPassword) }
     var modifier = Modifier
@@ -60,9 +61,7 @@ fun AppTextField(
             trailingIcon = {
                 if (isPassword) IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                     Icon(
-                        painter = painterResource(
-                            if (passwordVisibility) R.drawable.design_ic_visibility_off else R.drawable.design_ic_visibility
-                        ),
+                        if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                         contentDescription = "Toggle password visibility"
                     )
                 }

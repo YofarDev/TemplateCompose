@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,16 +23,24 @@ import fr.yofardev.templatecompose.ui.ScreensHolder
 import fr.yofardev.templatecompose.ui.components.LoadingIndicator
 import fr.yofardev.templatecompose.ui.screens.login.LoginRegisterScreen
 import fr.yofardev.templatecompose.ui.theme.TemplateComposeTheme
+import fr.yofardev.templatecompose.viewmodels.PublicationViewModel
 import fr.yofardev.templatecompose.viewmodels.UserViewModel
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val userViewModel: UserViewModel by viewModels()
+    private val publicationViewModel: PublicationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                userViewModel.isInitializing.value
+            }
+        }
         getCurrentUser()
+
         setContent {
             MyApp()
         }
@@ -39,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
     private fun getCurrentUser() {
         userViewModel.getCurrentUser()
+
     }
 
     @Composable
@@ -60,7 +70,7 @@ class MainActivity : ComponentActivity() {
                         LoginRegisterScreen(userViewModel)
                     }
                     composable("homeScreen") {
-                        ScreensHolder(userViewModel)
+                        ScreensHolder(userViewModel, publicationViewModel)
                     }
                 }
             }
