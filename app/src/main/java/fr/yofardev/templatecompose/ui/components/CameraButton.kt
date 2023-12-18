@@ -19,15 +19,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
@@ -43,11 +38,11 @@ import fr.yofardev.templatecompose.viewmodels.PublicationViewModel
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraButton(publicationViewModel: PublicationViewModel) {
-    var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
     val takePicture =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            imageBitmap = bitmap?.asImageBitmap()
+           publicationViewModel.imageBitmap.value = bitmap?.asImageBitmap()
         }
 
     LaunchedEffect(cameraPermissionState.status) {
@@ -84,7 +79,7 @@ fun CameraButton(publicationViewModel: PublicationViewModel) {
 
             }
     ) {
-        if (imageBitmap == null) {
+        if ( publicationViewModel.imageBitmap.value == null) {
             Column(
                 horizontalAlignment = CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -101,7 +96,7 @@ fun CameraButton(publicationViewModel: PublicationViewModel) {
         } else {
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = BitmapPainter(imageBitmap!!),
+                painter = BitmapPainter( publicationViewModel.imageBitmap.value!!),
                 contentScale = ContentScale.FillWidth,
                 contentDescription = "Taken picture"
             )

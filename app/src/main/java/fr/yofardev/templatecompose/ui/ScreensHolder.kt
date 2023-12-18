@@ -33,7 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import fr.yofardev.templatecompose.R
 import fr.yofardev.templatecompose.ui.components.AppDrawer
 import fr.yofardev.templatecompose.ui.components.AppTopBar
-import fr.yofardev.templatecompose.ui.screens.home.AddPublicationScreen
+import fr.yofardev.templatecompose.ui.screens.AddPublicationScreen
 import fr.yofardev.templatecompose.ui.screens.home.HomeScreen
 import fr.yofardev.templatecompose.ui.screens.map.MapScreen
 import fr.yofardev.templatecompose.ui.theme.BlueYofardev
@@ -56,6 +56,7 @@ fun ScreensHolder(
     val scope = rememberCoroutineScope()
 
     if (publicationViewModel.isAddPublicationVisible.value) AddPublicationScreen(
+        userViewModel,
         publicationViewModel
     ) else ModalNavigationDrawer(
         drawerState = drawerState,
@@ -91,9 +92,11 @@ fun ScreensHolder(
                 }
             }
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(bottom = 28.dp),
-                contentAlignment = Alignment.BottomCenter) {
+                contentAlignment = Alignment.BottomCenter
+            ) {
                 AnimatedFab(publicationViewModel = publicationViewModel)
             }
         }

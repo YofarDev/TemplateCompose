@@ -1,3 +1,12 @@
 package fr.yofardev.templatecompose.models
 
-data class Publication (val title: String, val description: String, val image: String, val date: String, val location: String)
+import com.firebase.geofire.GeoLocation
+import com.google.firebase.Timestamp
+
+data class Publication(
+    val title: String,
+    val description: String,
+    var image: String = "",
+    val dateAdded: Timestamp,
+    val location: GeoLocation
+)
