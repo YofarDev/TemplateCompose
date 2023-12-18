@@ -19,10 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -45,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.yofardev.templatecompose.R
+import fr.yofardev.templatecompose.ui.components.AppButton
 import fr.yofardev.templatecompose.ui.components.AppLogo
 import fr.yofardev.templatecompose.ui.components.AppTextField
 import fr.yofardev.templatecompose.ui.components.AppTile
@@ -186,12 +184,7 @@ fun LoginInputField(userViewModel: UserViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                Button(
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
-                    onClick = { userViewModel.signIn() }) {
-                    Text(stringResource(id = R.string.login), color = Color.White)
-                }
+                AppButton(text = stringResource(id = R.string.login), onClick = { userViewModel.signIn() })
             }
         }
     }

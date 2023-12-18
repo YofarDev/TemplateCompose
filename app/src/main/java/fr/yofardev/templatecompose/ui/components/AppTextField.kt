@@ -32,32 +32,38 @@ import androidx.compose.ui.unit.sp
 fun AppTextField(
     value: MutableState<String>,
     placeholder: String,
-    leadingIcon: ImageVector,
+    leadingIcon: ImageVector? = null,
     onValueChange: (String) -> Unit,
     isPassword: Boolean = false,
     hasError: Boolean = false,
-    errorMessage: String = ""
+    errorMessage: String = "",
+    minLines: Int = 1,
+    roundedCornerShape: RoundedCornerShape = RoundedCornerShape(50.dp)
 ) {
     var passwordVisibility by remember { mutableStateOf(isPassword) }
     var modifier = Modifier
         .fillMaxWidth()
-        .background(Color.White, shape = RoundedCornerShape(50.dp))
-        .clip(RoundedCornerShape(50.dp))
+        .background(Color.White, shape = roundedCornerShape)
+        .clip(roundedCornerShape)
     if (hasError) {
-        modifier = modifier.border(1.dp, Color.Red, RoundedCornerShape(50.dp))
+        modifier = modifier.border(1.dp, Color.Red, roundedCornerShape)
     }
 
     Column {
         TextField(
             value = value.value,
             onValueChange = onValueChange,
+            minLines = minLines ?: 1,
             modifier = modifier,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            leadingIcon = { Icon(leadingIcon, contentDescription = null) },
+               leadingIcon =  if (leadingIcon != null)  {
+                   { Icon(leadingIcon, contentDescription = null) } } else {
+                   null
+               },
             trailingIcon = {
                 if (isPassword) IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                     Icon(

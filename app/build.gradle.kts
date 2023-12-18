@@ -42,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -67,6 +68,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -78,19 +80,30 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     // Material components
     implementation("androidx.compose.material:material:1.5.4")
-    implementation ("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
-    implementation ("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
     // ViewModel utilities for Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     // hilt
-    implementation ("com.google.dagger:hilt-android:2.49")
-    kapt ("com.google.dagger:hilt-compiler:2.49")
+    implementation("com.google.dagger:hilt-android:2.49")
+    kapt("com.google.dagger:hilt-compiler:2.49")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     // splash screen
-    implementation( "androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.0.1")
     // Android Maps Compose composables for the Maps SDK for Android
-    implementation ("com.google.maps.android:maps-compose:4.3.0")
+    implementation("com.google.maps.android:maps-compose:4.3.0")
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    // Camera
+    val cameraxVersion = "1.3.1"
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:${cameraxVersion}")
+    implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
+    implementation("androidx.camera:camera-view:${cameraxVersion}")
+    implementation("androidx.camera:camera-extensions:${cameraxVersion}")
+    // Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 
 }
 

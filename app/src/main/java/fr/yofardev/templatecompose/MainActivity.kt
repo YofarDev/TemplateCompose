@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
             }
         }
         getCurrentUser()
-
         setContent {
             MyApp()
         }
@@ -48,7 +47,6 @@ class MainActivity : ComponentActivity() {
 
     private fun getCurrentUser() {
         userViewModel.getCurrentUser()
-
     }
 
     @Composable

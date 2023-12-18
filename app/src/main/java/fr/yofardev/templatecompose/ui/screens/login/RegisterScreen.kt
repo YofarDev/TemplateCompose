@@ -12,10 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -31,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.yofardev.templatecompose.R
+import fr.yofardev.templatecompose.ui.components.AppButton
 import fr.yofardev.templatecompose.ui.components.AppTextField
 import fr.yofardev.templatecompose.ui.components.AppTile
 import fr.yofardev.templatecompose.ui.components.LoadingIndicator
@@ -115,13 +113,7 @@ fun RegisterInputField(userViewModel: UserViewModel = viewModel()) {
                 )
             }
             if (userViewModel.isLoading.value) LoadingIndicator() else Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
-                Button(
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF313352)),
-                    onClick = { userViewModel.signUp() }) {
-                    Text(stringResource(id = R.string.register), color = Color.White)
-
-                }
+               AppButton(text = stringResource(id = R.string.register), onClick = { userViewModel.signUp() })
             }
         }
     }

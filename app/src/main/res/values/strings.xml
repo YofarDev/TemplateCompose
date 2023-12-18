@@ -16,8 +16,21 @@
     <string name="error_password">Veuillez entrer un mot de passe valide</string>
     <string name="tab_home">Accueil</string>
     <string name="tab_map">Carte</string>
+    <string name="confirm">Confirmer</string>
+    <!-- Add Publication -->
     <string name="add_publication">Ajouter une publication</string>
-
+    <string name="add_publication_title">Titre</string>
+    <string name="add_publication_description">Description</string>
+    <string name="add_publication_image">Image</string>
+    <string name="add_publication_location">Localisation</string>
+    <string name="add_publication_submit">Ajouter</string>
+    <string name="add_publication_error_title">Veuillez entrer un titre</string>
+    <string name="add_publication_error_description">Veuillez entrer une description</string>
+    <string name="add_publication_error_location">Veuillez entrer une localisation</string>
+    <string name="add_publication_error_image">Veuillez entrer une image</string>
+    <string name="add_publication_add_image">Ajouter une image</string>
+    <!-- Home -->
+    <string name="home_add_first">Ajouter votre première publication</string>
 
 
 </resources>
