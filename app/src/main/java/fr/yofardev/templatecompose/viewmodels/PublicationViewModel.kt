@@ -2,6 +2,7 @@ package fr.yofardev.templatecompose.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.firebase.geofire.GeoLocation
@@ -12,6 +13,7 @@ import fr.yofardev.templatecompose.models.Publication
 import fr.yofardev.templatecompose.repositories.PublicationRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,17 +24,20 @@ class PublicationViewModel @Inject constructor(private val publicationRepository
     val isFabExploded = mutableStateOf(false)
     val displayErrors = mutableStateOf(false)
     val processing = mutableStateOf(false)
+    val hasPublicationBeenAdded: MutableLiveData<Boolean?> = MutableLiveData(null)
 
 
     // Input fields
     val titleInput = mutableStateOf("")
     val descriptionInput = mutableStateOf("")
+    val photoFile = mutableStateOf<File?>(null)
     val imageBitmap = mutableStateOf<ImageBitmap?>(null)
 
     val hasAcceptedPermission = mutableStateOf(false)
 
     fun displayAddPublicationScreen() {
         viewModelScope.launch {
+            initInputs()
             isFabExploded.value = true
             delay(300)
             isAddPublicationVisible.value = true
@@ -49,16 +54,26 @@ class PublicationViewModel @Inject constructor(private val publicationRepository
 
     }
 
+    fun initInputs(){
+        titleInput.value = ""
+        descriptionInput.value = ""
+        photoFile.value = null
+        imageBitmap.value = null
+    }
 
 
 
-    fun addPublication(position: LatLng){
+
+    fun addPublication(userId:String, position: LatLng){
         if (titleInput.value.isEmpty() || descriptionInput.value.isEmpty() || imageBitmap.value == null) {
             displayErrors.value = true
             return
         }
 
+        processing.value = true
+
         val publication = Publication(
+            userId = userId,
             title = titleInput.value,
             description = descriptionInput.value,
             dateAdded = Timestamp.now(),
@@ -66,7 +81,9 @@ class PublicationViewModel @Inject constructor(private val publicationRepository
         )
 
         viewModelScope.launch {
-            publicationRepository.addPublication(publication, imageBitmap.value!!)
+           val result = publicationRepository.addPublication(publication, imageBitmap.value!!)
+            processing.value = false
+            hasPublicationBeenAdded.value = result.isSuccess
         }
     }
 

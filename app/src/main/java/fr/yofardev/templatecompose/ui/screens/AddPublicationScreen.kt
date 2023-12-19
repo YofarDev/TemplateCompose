@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,13 +101,27 @@ fun PublicationInputField(
                 errorMessage = stringResource(id = R.string.add_publication_description)
             )
             Spacer(modifier = Modifier.height(24.dp))
+            if (publicationViewModel.hasPublicationBeenAdded.value == false) {
+                Text(stringResource(id = R.string.try_again), color = Color.Red)
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
                 if (publicationViewModel.processing.value) LoadingIndicator() else AppButton(
                     text = stringResource(id = R.string.confirm),
-                    onClick = { publicationViewModel.addPublication(userViewModel.lastKnownPosition.value) }
+                    onClick = {
+                        // observe the result of the addPublication function
+                        publicationViewModel.hasPublicationBeenAdded.observeForever { result ->
+                            if (result == true) {
+                                publicationViewModel.hideAddPublicationScreen()
+                            }
+                        }
+                        publicationViewModel.addPublication(
+                            userId = userViewModel.currentUser.value?.id ?: "",
+                            position = userViewModel.lastKnownPosition.value
+                        )
+                    }
                 )
             }
         }

@@ -4,6 +4,7 @@ import com.firebase.geofire.GeoLocation
 import com.google.firebase.Timestamp
 
 data class Publication(
+    val userId:String,
     val title: String,
     val description: String,
     var image: String = "",
