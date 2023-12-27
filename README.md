@@ -10,8 +10,10 @@ L'application permet aux utilisateurs d'ajouter une image accompagnée d'une des
 
 1. Ecran de connexion / Inscription
 2. Ecran d'accueil
-3. La map
-4. Ajouter une publication
+3. Ecran de la carte
+4. Ecran d'ajout d'une publication
+5. Ecran détaillé d'une publication
+6. Le menu
 
 ### Outils utilisés
 
