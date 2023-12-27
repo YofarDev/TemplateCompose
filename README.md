@@ -4,8 +4,7 @@ Ce projet de démonstration est une vitrine pour [mon portfolio](http://yofardev
 
 L'application permet aux utilisateurs d'ajouter une image accompagnée d'une description, depuis leur géo-position actuel. Les autres utilisateurs ont la possibilité de visualiser les publications partagées autour d'eux ou sur la carte.
 
-
-🛠️ Bien qu'elle ne serve pas à des fins spécifiques, cette application représente un modèle technique illustrant l'intégration de divers outils.
+🛠️ Cette application n'a pas d'utilité spécifique, autre que de représenter un modèle technique illustrant l'intégration de divers outils.
 
 ## Aperçu
 
