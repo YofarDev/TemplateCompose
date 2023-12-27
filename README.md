@@ -10,9 +10,11 @@ L'application permet aux utilisateurs d'ajouter une image accompagnée d'une des
 
 #### 1. Ecran de connexion / Inscription
 
-![1703690561890](image/README/1703690561890.png)
+<img src="image/README/1703690561890.png" width="300">
 
 #### 2. Ecran d'accueil
+
+[Bientôt]
 
 #### 3. Ecran de la carte
 
