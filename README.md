@@ -8,14 +8,14 @@ L'application permet aux utilisateurs d'ajouter une image accompagnée d'une des
 
 ## Aperçu
 
-1. Ecran de connexion / Inscription
-2. Ecran d'accueil
-3. Ecran de la carte
-4. Ecran d'ajout d'une publication
-5. Ecran détaillé d'une publication
-6. Le menu
+#### 1. Ecran de connexion / Inscription
+#### 2. Ecran d'accueil
+#### 3. Ecran de la carte
+#### 4. Ecran d'ajout d'une publication
+#### 5. Ecran détaillé d'une publication
+#### 6. Le menu
 
-### Outils utilisés
+## Outils utilisés
 
 - MVVM architecture
 - [Kotlin](https://kotlinlang.org/)
