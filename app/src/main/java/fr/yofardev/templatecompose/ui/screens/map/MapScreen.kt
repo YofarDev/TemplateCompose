@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
@@ -32,15 +31,15 @@ import fr.yofardev.templatecompose.viewmodels.PublicationViewModel
 import fr.yofardev.templatecompose.viewmodels.UserViewModel
 
 @SuppressLint("PermissionLaunchedDuringComposition")
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MapScreen(
     userViewModel: UserViewModel = viewModel(),
     publicationViewModel: PublicationViewModel = viewModel()
 ) {
-    GetCurrentLocation(onLocationUpdated = { latLng ->
-        userViewModel.lastKnownPosition.value = latLng
+    GetCurrentLocation(onLocationUpdated = { currentPosition ->
+        userViewModel.lastKnownPosition.value = currentPosition
         updateCameraToCurrentPosition(userViewModel)
+        publicationViewModel.getPublicationsAround(currentPosition)
     })
 
     Surface(
@@ -50,29 +49,39 @@ fun MapScreen(
         color = MaterialTheme.colorScheme.background
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            MapCompose(userViewModel)
+            MapCompose(userViewModel, publicationViewModel)
             ButtonGetCurrentLocation(userViewModel)
         }
     }
 }
 
 @Composable
-fun MapCompose(userViewModel: UserViewModel) {
+fun MapCompose(userViewModel: UserViewModel, publicationViewModel: PublicationViewModel) {
     GoogleMap(
         cameraPositionState = userViewModel.currentCameraPositionState.value,
         uiSettings = MapUiSettings(
             compassEnabled = false,
             myLocationButtonEnabled = false,
             zoomControlsEnabled = false,
-
             ),
+
     ) {
         MapMarker(
             context = LocalContext.current,
             position = userViewModel.lastKnownPosition.value,
             title = "",
-            iconResourceId = R.drawable.marker
+            iconResourceId = R.drawable.location
         )
+        // Display all positions around
+        publicationViewModel.publications.value.forEach { publication ->
+            MapMarker(
+                context = LocalContext.current,
+                position = publication.getLatLng(),
+                title = publication.title,
+                iconResourceId = R.drawable.marker
+            )
+        }
+
     }
 }
 

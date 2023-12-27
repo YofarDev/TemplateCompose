@@ -31,6 +31,8 @@
     <string name="add_publication_add_image">Ajouter une image</string>
     <!-- Home -->
     <string name="home_add_first">Ajouter votre première publication</string>
+    <string name="home_last_publications_current_user">Vos dernières publications :</string>
+    <string name="home_publications_around">Publications aux alentours :</string>
 
 
 </resources>
