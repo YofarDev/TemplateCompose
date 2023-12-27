@@ -9,10 +9,17 @@ L'application permet aux utilisateurs d'ajouter une image accompagnée d'une des
 ## Aperçu
 
 #### 1. Ecran de connexion / Inscription
+
+![1703690561890](image/README/1703690561890.png)
+
 #### 2. Ecran d'accueil
+
 #### 3. Ecran de la carte
+
 #### 4. Ecran d'ajout d'une publication
+
 #### 5. Ecran détaillé d'une publication
+
 #### 6. Le menu
 
 ## Outils utilisés

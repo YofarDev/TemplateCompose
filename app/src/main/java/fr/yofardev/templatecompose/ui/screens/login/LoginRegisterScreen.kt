@@ -74,17 +74,19 @@ private fun getComponents(userViewModel: UserViewModel): @Composable() (ColumnSc
     val rotation by animateFloatAsState(
         targetValue = if (isRotated) 360f else 0f,
         animationSpec = tween(
-            durationMillis = 800,
-           // delayMillis = 0,
+            durationMillis = 400,
+            // delayMillis = 0,
             easing = EaseInOut
         ),
         label = "logoRotation"
     )
     return {
         Spacer(modifier = Modifier.height(32.dp))
-        Box(modifier = Modifier
-            .padding(top = 20.dp)
-            .rotate(rotation)) {
+        Box(
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .rotate(rotation)
+        ) {
             AppLogo(size = 140)
         }
         Text("YOFARDEV", fontFamily = rubik, fontWeight = FontWeight.Bold, fontSize = 24.sp)
@@ -172,19 +174,26 @@ fun LoginInputField(userViewModel: UserViewModel) {
                 errorMessage = stringResource(id = R.string.error_password)
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = stringResource(id = R.string.forgot_password),
-                color = Color.Black.copy(alpha = 0.8f),
-                textDecoration = TextDecoration.Underline,
-                fontSize = 12.sp
-            )
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text(
+                    text = stringResource(id = R.string.forgot_password),
+                    color = Color.Black.copy(alpha = 0.8f),
+                    textDecoration = TextDecoration.Underline,
+                    fontSize = 12.sp
+                )
+            }
 
             Spacer(modifier = Modifier.height(10.dp))
             if (userViewModel.isLoading.value) LoadingIndicator() else Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                AppButton(text = stringResource(id = R.string.login), onClick = { userViewModel.signIn() })
+                AppButton(
+                    text = stringResource(id = R.string.login),
+                    onClick = { userViewModel.signIn() })
             }
         }
     }
