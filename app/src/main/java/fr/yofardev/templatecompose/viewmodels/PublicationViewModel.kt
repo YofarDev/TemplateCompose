@@ -57,7 +57,6 @@ class PublicationViewModel @Inject constructor(private val publicationRepository
             delay(100)
             isFabExploded.value = false
         }
-
     }
 
     private fun initInputs() {

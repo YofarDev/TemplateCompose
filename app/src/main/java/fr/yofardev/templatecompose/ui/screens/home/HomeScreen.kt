@@ -1,6 +1,8 @@
 package fr.yofardev.templatecompose.ui.screens.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -105,6 +107,8 @@ fun PublicationList(publications: List<Publication>) {
 
 @Composable
 fun PublicationItem(publication: Publication) {
+    Box (
+       Modifier.clickable(onClick = { /*TODO*/ })){
     Row{
        AsyncImage(
             model = publication.image,
@@ -123,7 +127,7 @@ fun PublicationItem(publication: Publication) {
             color = Color.Black.copy(alpha = 0.5f),
             modifier = Modifier.padding(start = 16.dp)
         )
-    }
+    }}
 }
 
 

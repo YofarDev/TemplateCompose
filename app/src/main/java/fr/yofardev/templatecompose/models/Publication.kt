@@ -13,6 +13,7 @@ data class Publication(
     var image: String = "",
     val dateAdded: Timestamp,
     val location: Location,
+    val likedBy: List<String> = listOf(),
 ){
     // No-argument constructor
     constructor() : this("", "", "", "", "", Timestamp.now(), Location())
